@@ -1,16 +1,17 @@
 // import { User } from "../models/index.js";
 import User from "../models/User.js";
-import { signToken } from "../services/auth";
+import { signToken } from "../services/auth.js";
 
 const resolvers = {
   Query: {
-  me: async (_parent: any, _args: any, _context: any) => {
-        if (_context.user) {
-            const user = await User.findById(_context.user._id)
-            return user
-        }
-        throw new Error('You need to be logged in!')
-  },
+    me: async (_parent: any, _args: any, _context: any) => {
+            if (_context.user) {
+                const user = await User.findById(_context.user._id)
+                return user
+            }
+            throw new Error('You need to be logged in!')
+    },
+},
   Mutation: {
    login: async (_parent: any, args: any, _context: any) => {
         const user = await User.findOne({ email: args.email})
@@ -25,6 +26,7 @@ const resolvers = {
         return { token, user }
     },
     addUser: async (_parent: any, args: any, _context: any) => {
+        console.log('hello');
         const user = await User.create(args) 
         if (!user) {
             throw new Error('No user found with this email address!')
@@ -33,6 +35,7 @@ const resolvers = {
         return { token, user }
     },
     saveBook: async (_parent: any, args: any, _context: any) => {
+        console.log(_context);
         if (_context.user) {
             const updatedUser = await User.findByIdAndUpdate(
                 {_id: _context.user._id},
@@ -55,6 +58,6 @@ const resolvers = {
         throw new Error('You need to be logged in!')
    }
   },
-}};
+};
 
 export default resolvers;
